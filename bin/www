@@ -1,0 +1,29 @@
+#! /usr/bin/env node
+const path = require('path');
+const fs = require('fs');
+const Compiler = require('../src/Compiler');
+
+// 配置文件的路径
+
+let packageJson = path.resolve('package.json');
+let packageLock = path.resolve('package-lock.json');
+let config = { packageJson: {}, packageLock: {}  };
+
+try {
+  fs.accessSync(packageJson);
+  config.packageJson = require(packageJson);
+} catch (err) {
+  console.error('无权访问', err);
+}
+
+try {
+  fs.accessSync(packageLock);
+  config.packageLock = require(packageLock);
+} catch (err) {
+  console.error('无权访问', err);
+}
+
+
+let compiler = new Compiler(config);
+// 开始打包
+compiler.run()
